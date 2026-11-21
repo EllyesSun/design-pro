@@ -225,5 +225,8 @@ __marimo__/
 # Text backup files
 *.bak
 
+.idea/
+my_django_environment/
+
 # Database
 *.sqlite3
