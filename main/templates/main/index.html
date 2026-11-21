@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+{% block content %}
+    <div class="counter">
+        Принято в работу: {{ in_progress_count|default:0 }}
+    </div>
+    <h3>Последние выполненные работы</h3>
+    <div class="cards">
+        {% for app in completed_apps %}
+            <div class="card">
+                {% if app.design_image %}
+                    <img src="{{ app.design_image.url }}" alt="{{ app.title }}">
+                {% endif %}
+                <h4>{{ app.title }}</h4>
+                <p>{{ app.category.name }} | {{ app.created_at | date:"d.m..Y H:i"} }</p>
+            </div>
+        {% empty %}
+        <p>Выполненных заявок пока нет</p>
+        {% endfor %}
+    </div>
+{% endblock %}

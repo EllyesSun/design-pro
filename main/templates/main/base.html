@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Design.pro</title>
+    <link rel="stylesheet" href="{% static 'main/style.css' %}">
+</head>
+<body>
+    <nav>
+        <a class="logo" href="{% url 'index' %}">Design.pro</a>
+        <div>
+            {% if user.is_authenticated %}
+                <span>Привет, {{user.username}}!</span>
+                {% if user.is_superuser %}
+                    <a href="/superadmin/" class="btn">Админка</a>
+                {% endif %}
+                <form action="{% url 'logout' %}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Выход</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn">Вход</a>
+                <a href="{% url 'register' %}" class="btn">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>
