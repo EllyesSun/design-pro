@@ -7,7 +7,9 @@ class RegistationForm(UserCreationForm):
     full_name = forms.CharField(label='ФИО', required=True)
     username = forms.CharField(label='Логин', required=True)
     email = forms.EmailField(label='Email', required=True)
-    agree = forms.BooleanField(label='Согласие на обработку персональных данных', required=True)
+    agree = forms.BooleanField(label='Согласие на обработку персональных данных', required=True, initial=True)
+    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput, help_text="", required=True)
+    password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput, help_text="", required=True)
 
     class Meta:
         model = CustomUser
