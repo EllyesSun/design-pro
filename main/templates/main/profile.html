@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+{% block content %}
+    <div>
+        <h2>Мои заявки</h2>
+        <a href="{% url 'create_app' %}" class="btn">Создать заявку</a>
+    </div>
+
+    <div style="margin: 20px 0;">
+        <b>Фильтр:</b>
+        <a href="{% url 'profile' %}">Все</a> |
+        <a href="?status=new">Новые</a> |
+        <a href="?status=in_progress">Принято в работу</a> |
+        <a href="?status=completed">Выполнено</a>
+    </div>
+
+    {% for app in apps %}
+        <div class="card">
+            <p><small>{{ app.created_at|date:"d.m.Y H:i" }} | Категория: {{ app.category.name }} | Статус: <strong>{{ app.get_dtatus_display }}</strong></small></p>
+            <h3>{{ app.title }}</h3>
+            <p>{{ app.description }}</p>
+            {% if app.status == 'new' %}
+                <a href="{% url 'delete_app' app.pk %}" class="btn btn-danger">Удалить</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Заявок пока нет</p>
+    {% endfor %}
+{% endblock %}

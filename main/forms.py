@@ -1,7 +1,8 @@
 import re
+import os
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, Application
 
 class RegistationForm(UserCreationForm):
     full_name = forms.CharField(label='ФИО', required=True)
@@ -28,3 +29,17 @@ class RegistationForm(UserCreationForm):
             if CustomUser.objects.filter(username=username).exists():
                 raise forms.ValidationError('Такой логин уже существует')
             return username
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ('title', 'description', 'category', 'image')
+
+        def clean_image(self):
+            image = self.cleaned_data.get('image')
+            if image:
+                ext = os.path.splitext(image)[1].lower()
+                if ext not in ['.jpg', '.jpeg', '.png', '.bmp']:
+                    raise forms.ValidationError('Недопустимый формат изображения')
+                if image.size > 2 * 1024 * 1024:
+                    raise forms.ValidationError('Размер файла не должен превышать 2 МБ')
+            return image

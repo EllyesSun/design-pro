@@ -28,7 +28,7 @@ nav {
 .btn {
     font-size: 14px;
     padding: 8px 14px;
-    background-color: rgba(0, 0, 255, 0.6);
+    background: rgba(0, 0, 255, 0.6);
     color: #fff;
     border-radius: 6px;
     text-decoration: none;

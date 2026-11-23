@@ -12,6 +12,7 @@
         <div>
             {% if user.is_authenticated %}
                 <span>Привет, {{user.username}}!</span>
+                <a href="{% url 'profile' %}" class="btn">Личный кабинет</a>
                 {% if user.is_superuser %}
                     <a href="/superadmin/" class="btn">Админка</a>
                 {% endif %}

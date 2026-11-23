@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
-from .forms import RegistationForm
+from django.contrib.auth.decorators import login_required
+from .forms import RegistationForm, ApplicationForm
 from .models import Application
 
 def index(request):
@@ -20,3 +21,33 @@ def register(request):
         form = RegistationForm()
     return render(request, 'main/register.html', {'form': form})
 
+@login_required
+def profile(request):
+    status_filter = request.GET.get('status')
+    apps = Application.objects.filter(user=request.user).order_by('-created_at')
+    if status_filter:
+        apps = apps.filter(status=status_filter)
+    return render(request, 'main/profile.html', {'apps': apps, 'current_stastus': status_filter})
+
+@login_required
+def create_application(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            app = form.save(commit=False)
+            app.user = request.user
+            app.save()
+            return redirect('profile')
+    else:
+        form = ApplicationForm()
+    return render(request, 'main/create_app.html', {'form': form})
+
+@login_required
+def delete_application(request, pk):
+    app = get_object_or_404(Application, pk=pk, user=request.user)
+    if app.status != 'new':
+        return redirect('profile')
+    if request.method == 'POST':
+        app.delete()
+        return redirect('profile')
+    return render(request, 'main/delete_app.html', {'app': app})
