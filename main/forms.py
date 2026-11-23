@@ -2,7 +2,7 @@ import re
 import os
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, Application
+from .models import CustomUser, Application, Category
 
 class RegistationForm(UserCreationForm):
     full_name = forms.CharField(label='ФИО', required=True)
@@ -36,6 +36,34 @@ class ApplicationForm(forms.ModelForm):
 
         def clean_image(self):
             image = self.cleaned_data.get('image')
+            if image:
+                ext = os.path.splitext(image)[1].lower()
+                if ext not in ['.jpg', '.jpeg', '.png', '.bmp']:
+                    raise forms.ValidationError('Недопустимый формат изображения')
+                if image.size > 2 * 1024 * 1024:
+                    raise forms.ValidationError('Размер файла не должен превышать 2 МБ')
+            return image
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('name',)
+
+class InProgressForm(forms.ModelForm):
+    comment = forms.CharField(label="Комментарий администратора", widget=forms.Textarea, required=True)
+
+    class Meta:
+        model = Application
+        fields = ('comment',)
+
+class CompletedForm(forms.ModelForm):
+    design_image = forms.ImageField(label="Дизайн", required=True)
+
+    class Meta:
+        model = Application
+        fields = ('design_image',)
+
+        def clean_design_image(self):
+            image = self.cleaned_data.get('design_image')
             if image:
                 ext = os.path.splitext(image)[1].lower()
                 if ext not in ['.jpg', '.jpeg', '.png', '.bmp']:

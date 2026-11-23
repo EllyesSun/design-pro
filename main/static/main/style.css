@@ -37,3 +37,12 @@ nav {
 .btn:hover {
     background-color: rgba(0, 0, 255, 0.7);
 }
+.box p {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.box label {
+    padding-top: 3px;
+}

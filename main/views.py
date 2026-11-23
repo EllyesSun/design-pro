@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from .forms import RegistationForm, ApplicationForm
-from .models import Application
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import RegistationForm, ApplicationForm, CategoryForm, InProgressForm, CompletedForm
+from .models import Application, Category
 
 def index(request):
     completed_apps = Application.objects.filter(status='complited').order_by('-created_at')[:4]
@@ -51,3 +51,38 @@ def delete_application(request, pk):
         app.delete()
         return redirect('profile')
     return render(request, 'main/delete_app.html', {'app': app})
+
+def is_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@user_passes_test(is_admin)
+def admin_panel(request):
+    apps = Application.objects.all().order_by('-created_at')
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        cat_form = CategoryForm(request.POST)
+        if cat_form.is_valid():
+            cat = cat_form.save()
+            return redirect('admin_panel')
+    else:
+        cat_form = CategoryForm()
+    return render(request, 'main/admin_panel.html', {'apps': apps, 'categories': categories, 'cat_form': cat_form,})
+
+@user_passes_test(is_admin)
+def change_status(request, pk, new_status):
+    app = get_object_or_404(Application, pk=pk)
+    if app.status != 'new':
+        return redirect('admin_panel')
+
+    FormClass = InProgressForm if new_status == 'in_progress' else CompletedForm
+    if request.method == 'POST':
+        form = FormClass(request.POST, request.FILES, instance=app)
+        if form.is_valid():
+            app = form.save(commit=False)
+            app.status = new_status
+            app.save()
+            return redirect('admin_panel')
+    else:
+        form = FormClass(instance=app)
+
+    return render(request, 'main/change_status.html', {'form': form, 'app': app, 'new_status': new_status})
