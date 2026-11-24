@@ -23,7 +23,7 @@
     <h2>Управление пользователями</h2>
     {% for u in users %}
         <li style="margin-bottom: 8px;">
-            <strong>{{ u.full_name }}</strong> ({{ u.username }} - {{ u.email }}
+            <strong>{{ u.full_name }}</strong> ({{ u.username }} - {{ u.email }})
             <a href="{% url 'delete_user' u.pk %}" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">Удалить</a>
         </li>
     {% empty %}

@@ -11,7 +11,7 @@
                     <img src="{{ app.design_image.url }}" alt="{{ app.title }}">
                 {% endif %}
                 <h4>{{ app.title }}</h4>
-                <p>{{ app.category.name }} | {{ app.created_at | date:"d.m..Y H:i"} }</p>
+                <p>{{ app.category.name }} | {{ app.created_at | date:"d.m.Y H:i"}}</p>
             </div>
         {% empty %}
         <p>Выполненных заявок пока нет</p>

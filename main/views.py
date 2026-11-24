@@ -6,11 +6,11 @@ from .models import Application, Category, CustomUser
 
 
 def index(request):
-    completed_apps = Application.objects.filter(status='complited').order_by('-created_at')[:4]
-    in_progress_apps = Application.objects.filter(status='in_progress').count()
+    completed_apps = Application.objects.filter(status='completed').order_by('-created_at')[:4]
+    in_progress_count = Application.objects.filter(status='in_progress').count()
     return render(request, 'main/index.html', {
         'completed_apps': completed_apps,
-        'in_progress_apps': in_progress_apps,
+        'in_progress_count': in_progress_count,
     })
 def register(request):
     if request.method == 'POST':
@@ -22,7 +22,7 @@ def register(request):
         form = RegistrationForm()
     return render(request, 'main/register.html', {'form': form})
 
-@login_required
+@login_required(login_url='login')
 def profile(request):
     if request.user.is_superuser:
         return redirect('admin_panel')
@@ -32,7 +32,7 @@ def profile(request):
         apps = apps.filter(status=status_filter)
     return render(request, 'main/profile.html', {'apps': apps, 'current_stastus': status_filter})
 
-@login_required
+@login_required(login_url='login')
 def create_application(request):
     if request.method == 'POST':
         form = ApplicationForm(request.POST, request.FILES)
@@ -45,7 +45,7 @@ def create_application(request):
         form = ApplicationForm()
     return render(request, 'main/create_app.html', {'form': form})
 
-@login_required
+@login_required(login_url='login')
 def delete_application(request, pk):
     app = get_object_or_404(Application, pk=pk, user=request.user)
     if app.status != 'new':
@@ -58,7 +58,13 @@ def delete_application(request, pk):
 def is_admin(user):
     return user.is_authenticated and user.is_superuser
 
-@user_passes_test(is_admin)
+@user_passes_test(is_admin, login_url='login')
+def delete_user(request, pk):
+    user_to_delete = get_object_or_404(CustomUser, pk=pk, is_superuser=False)
+    user_to_delete.delete()
+    return redirect('admin_panel')
+
+@user_passes_test(is_admin, login_url='login')
 def admin_panel(request):
     apps = Application.objects.all().order_by('-created_at')
     categories = Category.objects.all()
@@ -70,21 +76,21 @@ def admin_panel(request):
             return redirect('admin_panel')
     else:
         cat_form = CategoryForm()
-    return render(request, 'main/admin_panel.html', {'apps': apps, 'categories': categories, 'cat_form': cat_form,})
+    return render(request, 'main/admin_panel.html', {'apps': apps, 'categories': categories, 'users': users, 'cat_form': cat_form,})
 
-@user_passes_test(is_admin)
+@user_passes_test(is_admin, login_url='login')
 def delete_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     return redirect('admin_panel')
 
-@user_passes_test(is_admin)
+@user_passes_test(is_admin, login_url='login')
 def delete_application_admin(request, pk):
     app = get_object_or_404(Application, pk=pk)
     app.delete()
     return redirect('admin_panel')
 
-@user_passes_test(is_admin)
+@user_passes_test(is_admin, login_url='login')
 def change_status(request, pk, new_status):
     app = get_object_or_404(Application, pk=pk)
     if app.status != 'new':
