@@ -33,16 +33,26 @@ nav {
     border-radius: 6px;
     text-decoration: none;
     border: none;
+    cursor: pointer;
 }
 .btn:hover {
-    background-color: rgba(0, 0, 255, 0.7);
+    background: rgba(0, 0, 255, 0.7);
+}
+.btn-danger {
+    cursor: pointer;
+}
+.btn-danger:hover {
+    background: darkred;
 }
 .box p {
     display: flex;
     align-items: flex-start;
     gap: 10px;
 }
-
 .box label {
     padding-top: 3px;
+}
+ul {
+    list-style: none;
+    padding-left: 0;
 }

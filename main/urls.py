@@ -11,7 +11,8 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/create/', views.create_application, name='create_app'),
     path('profile/delete/<int:pk>/', views.delete_application, name='delete_app'),
-    path('panel/', views.admin_panel, name='admin_panel'),
-    path('panel/category/delete/<int:pk>/', views.delete_category, name='delete_category'),
-    path('panel/status/<int:pk>/<str:new_status>/', views.change_status, name='change_status'),
+    path('superadmin/', views.admin_panel, name='admin_panel'),
+    path('superadmin/category/delete/<int:pk>/', views.delete_category, name='delete_category'),
+    path('superadmin/application/delete/<int:pk>/', views.delete_application_admin, name='delete_app_admin'),
+    path('superadmin/status/<int:pk>/<str:new_status>/', views.change_status, name='change_status'),
 ]

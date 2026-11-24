@@ -15,7 +15,7 @@
 
     {% for app in apps %}
         <div class="card">
-            <p><small>{{ app.created_at|date:"d.m.Y H:i" }} | Категория: {{ app.category.name }} | Статус: <strong>{{ app.get_dtatus_display }}</strong></small></p>
+            <p><small>{{ app.created_at|date:"d.m.Y H:i" }} | Категория: {{ app.category.name }} | Статус: <strong>{{ app.get_status_display }}</strong></small></p>
             <h3>{{ app.title }}</h3>
             <p>{{ app.description }}</p>
             {% if app.status == 'new' %}

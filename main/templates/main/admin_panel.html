@@ -10,8 +10,8 @@
     <ul>
         {% for cat in categories %}
             <li style="margin-bottom: 8px;">
-                {{ cat_name }}
-                <a href="{% url 'delete_category' cat.pk%}" class="btn btn-dasnger" style="padding: 3px 8px; font-size: 12px;">Удалить</a>
+                {{ cat.name }}
+                <a href="{% url 'delete_category' cat.pk %}" class="btn btn-dasnger" style="padding: 4px 10px; font-size: 12px;">Удалить</a>
             </li>
         {% empty %}
         <p>Категорий нет</p>
@@ -20,15 +20,29 @@
 
     <hr style="margin: 30px 0;">
 
+    <h2>Управление пользователями</h2>
+    {% for u in users %}
+        <li style="margin-bottom: 8px;">
+            <strong>{{ u.full_name }}</strong> ({{ u.username }} - {{ u.email }}
+            <a href="{% url 'delete_user' u.pk %}" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">Удалить</a>
+        </li>
+    {% empty %}
+        <p>Зарегистрированных пользователей нет</p>
+    {% endfor %}
+
+    <hr style="margin: 30px 0;">
+
     <h2>Все заявки пользователей</h2>
     {% for app in apps %}
         <div class="card" >
-            <p><small>{{ app.created_at|date:"d.m.Y H:i" }} | Категория: {{ app.category.name }} | Статус: <strong>{{ app.get_dtatus_display }}</strong></small></p>
+            <p><small>{{ app.created_at|date:"d.m.Y H:i" }} | Категория: {{ app.category.name }} | Статус: <strong>{{ app.get_status_display }}</strong></small></p>
             <h3>{{ app.title }}</h3>
             <p>{{ app.description }}</p>
             {% if app.status == 'new' %}
-                <a href="{% url 'delete_app' app.pk %}" class="btn btn-danger">Удалить</a>
+                <a href="{% url 'change_status' app.pk 'in_progress' %}" class="btn">Принять в работу</a>
+                <a href="{% url 'change_status' app.pk 'completed' %}" class="btn">Выполнено</a>
             {% endif %}
+            <a href="{% url 'delete_app_admin' app.pk %}" class="btn btn-danger">Удалить заявку</a>
         </div>
     {% empty %}
         <p>Заявок нет</p>

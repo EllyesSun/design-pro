@@ -1,5 +1,5 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -12,10 +12,10 @@
         <div>
             {% if user.is_authenticated %}
                 <span>Привет, {{user.username}}!</span>
-                <a href="{% url 'profile' %}" class="btn">Личный кабинет</a>
                 {% if user.is_superuser %}
-                    <a href="{% url 'admin_panel' %}" class="btn">Управление сайтом</a>
-                    <a href="/superadmin/" class="btn">Админка</a>
+                    <a href="{% url 'admin_panel' %}" class="btn">Панель администратора</a>
+                {% else %}
+                    <a href="{% url 'profile' %}" class="btn">Личный кабинет</a>
                 {% endif %}
                 <form action="{% url 'logout' %}" method="post" style="display: inline">
                     {% csrf_token %}

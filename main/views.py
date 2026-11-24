@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import RegistationForm, ApplicationForm, CategoryForm, InProgressForm, CompletedForm
-from .models import Application, Category
+from .forms import RegistrationForm, ApplicationForm, CategoryForm, InProgressForm, CompletedForm
+from .models import Application, Category, CustomUser
+
 
 def index(request):
     completed_apps = Application.objects.filter(status='complited').order_by('-created_at')[:4]
@@ -13,16 +14,18 @@ def index(request):
     })
 def register(request):
     if request.method == 'POST':
-        form = RegistationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
             return redirect('index')
     else:
-        form = RegistationForm()
+        form = RegistrationForm()
     return render(request, 'main/register.html', {'form': form})
 
 @login_required
 def profile(request):
+    if request.user.is_superuser:
+        return redirect('admin_panel')
     status_filter = request.GET.get('status')
     apps = Application.objects.filter(user=request.user).order_by('-created_at')
     if status_filter:
@@ -59,6 +62,7 @@ def is_admin(user):
 def admin_panel(request):
     apps = Application.objects.all().order_by('-created_at')
     categories = Category.objects.all()
+    users = CustomUser.objects.filter(is_superuser=False)
     if request.method == 'POST':
         cat_form = CategoryForm(request.POST)
         if cat_form.is_valid():
@@ -67,6 +71,18 @@ def admin_panel(request):
     else:
         cat_form = CategoryForm()
     return render(request, 'main/admin_panel.html', {'apps': apps, 'categories': categories, 'cat_form': cat_form,})
+
+@user_passes_test(is_admin)
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    category.delete()
+    return redirect('admin_panel')
+
+@user_passes_test(is_admin)
+def delete_application_admin(request, pk):
+    app = get_object_or_404(Application, pk=pk)
+    app.delete()
+    return redirect('admin_panel')
 
 @user_passes_test(is_admin)
 def change_status(request, pk, new_status):
