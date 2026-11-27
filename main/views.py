@@ -30,7 +30,7 @@ def profile(request):
     apps = Application.objects.filter(user=request.user).order_by('-created_at')
     if status_filter:
         apps = apps.filter(status=status_filter)
-    return render(request, 'main/profile.html', {'apps': apps, 'current_stastus': status_filter})
+    return render(request, 'main/profile.html', {'apps': apps, 'current_status': status_filter})
 
 @login_required(login_url='login')
 def create_application(request):

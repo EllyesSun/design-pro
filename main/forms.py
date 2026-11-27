@@ -1,7 +1,7 @@
 import re
 from PIL import Image
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.validators import FileExtensionValidator
 from .models import CustomUser, Application, Category
 import os
@@ -92,3 +92,8 @@ class CompletedForm(forms.ModelForm):
     class Meta:
         model = Application
         fields = ('design_image',)
+
+class CustomLoginForm(AuthenticationForm):
+    error_messages = {
+        'invalid_login': 'Неверный логин или пароль',
+    }

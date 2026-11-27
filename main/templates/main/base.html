@@ -11,7 +11,7 @@
         <a class="logo" href="{% url 'index' %}">Design.pro</a>
         <div>
             {% if user.is_authenticated %}
-                <span>Привет, {{user.username}}!</span>
+                <span id="greeting">Привет, {{user.username}}!</span>
                 {% if user.is_superuser %}
                     <a href="{% url 'admin_panel' %}" class="btn">Панель администратора</a>
                 {% else %}

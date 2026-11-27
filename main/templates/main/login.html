@@ -1,9 +1,6 @@
 {% extends 'main/base.html' %}
 {% block content %}
     <h2>Вход в личный кабинет</h2>
-    {% if form.errors %}
-        <div class="error">Неверный логин или пароль</div>
-    {% endif %}
     <form method="post" class="box">
         {% csrf_token %}
         {{ form.as_p }}
