@@ -229,4 +229,5 @@ __marimo__/
 my_django_environment/
 
 # Database
-*.sqlite3
+*.sqlite3media/*
+!media/plans/
